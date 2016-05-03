@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+            onLogout();
             return true;
         }
 
@@ -57,5 +58,12 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    public void onLogout(){
+        //Funcion que deslogea al usuario y nos vuelve a la pantalla principal
+        Firebase firebase = new Firebase(Constantes.FIREBASE_URL);
+        firebase.unauth();
+        loadLoginView();
     }
 }
