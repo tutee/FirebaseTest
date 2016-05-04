@@ -1,5 +1,6 @@
 package com.example.matias.firebasetest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.client.Firebase;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Firebase mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,15 +22,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        mRef = new Firebase(Constantes.FIREBASE_URL);
+        if (mRef.getAuth() == null) {
+            loadLoginView();
+        }
+
     }
 
     @Override
@@ -43,10 +45,25 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            onLogout();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadLoginView() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    public void onLogout(){
+        //Funcion que deslogea al usuario y nos vuelve a la pantalla principal
+        Firebase firebase = new Firebase(Constantes.FIREBASE_URL);
+        firebase.unauth();
+        loadLoginView();
     }
 }
